@@ -84,7 +84,7 @@ public class FeatureUtil {
 	    if (apos && !(tok.startsWith("<URL"))){
 	    	fuzz.add(tok.replaceAll("\\p{Punct}", ""));//t-swift->tswift
 	    	//maybe a bad idea (bello's->bello, re-enable->re, croplife's->'s)
-	    	fuzz.addAll(Arrays.asList(tok.split("\\p{Punct}")));
+	    	//fuzz.addAll(Arrays.asList(tok.split("\\p{Punct}")));
 	    }
 	    return fuzz;
 	}

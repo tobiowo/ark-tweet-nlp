@@ -79,6 +79,7 @@ public class MiscFeatures {
 
 	public static class CapitalizationFeatures implements FeatureExtractorInterface {	
 		public void addFeatures(List<String> tokens, PositionFeaturePairs pairs) {
+		        String[] capToks = new String[tokens.size()];
 			for (int t=0; t < tokens.size(); t++) {
 				String tok = tokens.get(t);
 				/*if (Character.isUpperCase(tok.charAt(0))) {
@@ -110,9 +111,25 @@ public class MiscFeatures {
 							caplabel = "pos-" + caplabel;
 						else if (t==0)
 							caplabel = "first-" + caplabel;
-						pairs.add(t, caplabel+"");
+						pairs.add(t, caplabel);
 					}
 				}
+				capToks[t] = caplabel;
+			}
+			for (int t=0; t < tokens.size(); t++) {
+			    if (t > 0) {
+			        pairs.add(t, "prevcap|"+capToks[t-1]);
+			        pairs.add(t, "prevcurrcap|"+capToks[t-1]+capToks[t]);
+			    }
+			    if (t < tokens.size() - 1) {
+			        pairs.add(t, "nextcap|"+capToks[t+1]);
+			        pairs.add(t, "currnextcap|"+capToks[t]+capToks[t+1]);
+			        
+			        if (t > 0) {
+			            pairs.add(t, "prevnextcap|"+capToks[t-1]+capToks[t+1]);
+			            pairs.add(t, "prevcurrnextcap|"+capToks[t-1]+capToks[t]+capToks[t+1]);
+			        }
+			    }
 			}
 		}
 	}
