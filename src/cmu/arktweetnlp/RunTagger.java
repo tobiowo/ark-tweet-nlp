@@ -2,6 +2,7 @@ package cmu.arktweetnlp;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -39,7 +40,7 @@ public class RunTagger {
 	public boolean noOutput = false;
 	public boolean justTokenize = false;
 	
-	public static enum Decoder { GREEDY, VITERBI };
+	public static enum Decoder { GREEDY, VITERBI, EASY };
 	public Decoder decoder = Decoder.GREEDY; 
 	public boolean showConfidence = true;
 
@@ -90,7 +91,11 @@ public class RunTagger {
 
 		JsonTweetReader jsonTweetReader = new JsonTweetReader();
 		
-		LineNumberReader reader = new LineNumberReader(BasicFileIO.openFileToReadUTF8(inputFilename));
+		LineNumberReader reader;
+		if (inputFilename.equals("/dev/stdin"))
+		    reader = new LineNumberReader(new InputStreamReader(System.in, "UTF-8"));
+		else
+		    reader = new LineNumberReader(BasicFileIO.openFileToReadUTF8(inputFilename));
 		String line;
 		long currenttime = System.currentTimeMillis();
 		int numtoks = 0;
@@ -149,12 +154,14 @@ public class RunTagger {
 			tagger.model.greedyDecode(mSent, showConfidence);
 		} else if (decoder == Decoder.VITERBI) {
 //			if (showConfidence) throw new RuntimeException("--confidence only works with greedy decoder right now, sorry, yes this is a lame limitation");
-			tagger.model.viterbiDecode(mSent);
-		}		
+			tagger.model.viterbiDecode(mSent, showConfidence);
+		} else if (decoder == Decoder.EASY) {
+//                  if (showConfidence) throw new RuntimeException("--confidence only works with greedy decoder right now, sorry, yes this is a lame limitation");
+                    tagger.model.easyDecode(mSent, showConfidence);
+            }
 	}
 	
 	public void runTaggerInEvalMode() throws IOException, ClassNotFoundException {
-		
 		long t0 = System.currentTimeMillis();
 		int n=0;
 
@@ -321,6 +328,7 @@ public class RunTagger {
 			} else if (args[i].equals("--decoder")) {
 				if (args[i+1].equals("viterbi")) tagger.decoder = Decoder.VITERBI;
 				else if (args[i+1].equals("greedy"))  tagger.decoder = Decoder.GREEDY;
+				else if (args[i+1].equals("easy"))  tagger.decoder = Decoder.EASY;
 				else die("unknown decoder " + args[i+1]);
 				i += 2;
 			} else if (args[i].equals("--quiet")) {
@@ -372,10 +380,10 @@ public class RunTagger {
 				outputFormat = "pretsv";
 			}
 		}
-		if (showConfidence && decoder==Decoder.VITERBI) {
+/*		if (showConfidence && decoder==Decoder.VITERBI) {
 			System.err.println("Confidence output is unimplemented in Viterbi, turning it off.");
 			showConfidence = false;
-		}
+		}*/
 		if (justTokenize) {
 			showConfidence = false;
 		}
