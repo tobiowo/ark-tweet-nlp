@@ -144,18 +144,20 @@ public class FeatureExtractor {
 		allFeatureExtractors = new ArrayList<FeatureExtractorInterface>();
 		
 		allFeatureExtractors.add(new WordClusterPaths());
+		//allFeatureExtractors.add(new RIClusterPaths());
+		//allFeatureExtractors.add(new LDAPaths());
 		allFeatureExtractors.add(new WordListFeatures.POSTagDict());
 		allFeatureExtractors.add(new WordListFeatures.MetaphonePOSDict());
 
-		allFeatureExtractors.add(new MiscFeatures.NgramSuffix(20));
-		allFeatureExtractors.add(new MiscFeatures.NgramPrefix(20));
+		allFeatureExtractors.add(new MiscFeatures.NgramSuffix(5));
+		allFeatureExtractors.add(new MiscFeatures.NgramPrefix(5));
 		allFeatureExtractors.add(new MiscFeatures.PrevWord());
 		allFeatureExtractors.add(new MiscFeatures.NextWord());
 		allFeatureExtractors.add(new MiscFeatures.WordformFeatures());
 
 		allFeatureExtractors.add(new MiscFeatures.CapitalizationFeatures());
 		allFeatureExtractors.add(new MiscFeatures.SimpleOrthFeatures());
-		allFeatureExtractors.add(new MiscFeatures.PrevNext());
+		//allFeatureExtractors.add(new MiscFeatures.PrevNext());
 		
 		allFeatureExtractors.add(new WordListFeatures.Listofnames("proper_names"));
 		allFeatureExtractors.add(new WordListFeatures.Listofnames("celebs")); //2012-08-09 version of freebase celebrity list
@@ -168,8 +170,8 @@ public class FeatureExtractor {
 		allFeatureExtractors.add(new MiscFeatures.Positions());
 		
 		// These were disabled in the 0.3 release
-		//allFeatureExtractors.add(new Prev2Words());
-		//allFeatureExtractors.add(new Next2Words());
+		//allFeatureExtractors.add(new MiscFeatures.Prev2Words());
+		//allFeatureExtractors.add(new MiscFeatures.Next2Words());
 		//allFeatureExtractors.add(new MiscFeatures.URLFeatures());
 
 	}
